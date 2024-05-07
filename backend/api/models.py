@@ -56,6 +56,17 @@ class Post(models.Model):
     caption = models.CharField(max_length=255)
     description = models.TextField()
     likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class Comments(models.Model):
+	comments_id = models.AutoField(primary_key=True)
+	user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+	content = models.CharField(max_length=200)
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+class Analytics(models.Model):
+	analytics_id = models.AutoField(primary_key=True)
+	post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+	total_likes = models.IntegerField(default=0)
+	action_timestamp = models.DateTimeField(auto_now_add=True)
