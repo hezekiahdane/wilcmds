@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { client } from "../Url";
 import Logo from "/wil-logo.png";
@@ -62,6 +62,7 @@ const Navbar = () => {
       console.error("Errot fetching user data: ", error);
     }
   };
+
   function submitLogout(e) {
     e.preventDefault();
     client.post("/logout", { withCredentials: true }).then(function (res) {
@@ -77,6 +78,7 @@ const Navbar = () => {
       setIsOpen(false);
     }
   }
+
   const baseUrl = "http://localhost:8000";
   const imagePath = userProfile.user_profile
     ? userProfile.user_profile
@@ -105,6 +107,7 @@ const Navbar = () => {
                   className="object-cover rounded-full"
                 />
               </button>
+
               {/* Modal */}
               {isOpen && (
                 <div
@@ -116,9 +119,9 @@ const Navbar = () => {
                     <img
                       src={baseUrl + imagePath}
                       alt="pfp"
-                      className="object-cover rounded-full size-9"
+                      className="object-cover rounded-full size-10"
                     />
-                    <p className="font-medium truncate">
+                    <p className="font-medium truncate ml-4">
                       {userProfile.firstname + " " + userProfile.lastname}
                     </p>
                   </div>
@@ -132,6 +135,7 @@ const Navbar = () => {
                       Account Settings
                     </div>
                   </Link>
+                  
                   <form
                     onSubmit={submitLogout}
                     className="px-2 py-2 rounded-sm hover:text-yellow hover:bg-black-2"

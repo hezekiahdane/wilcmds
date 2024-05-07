@@ -145,7 +145,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = '/static/'
 
 # Change this root to your actual root in your local computer
-MEDIA_ROOT = 'C:/Users/Zeke/Desktop/Lucaren-main/backend/media'
+MEDIA_ROOT = 'C:/Users/Zeke/Desktop/wilcmds/backend/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

@@ -67,7 +67,7 @@ const Registration = () => {
                    <div className='border-2 border-black w-full rounded-xl flex flex-row relative'>
                       <FontAwesomeIcon icon={faEnvelope} className='absolute top-[14px] left-[12px] text-custom-gray'/>
                       <input 
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray bg-inherit w-full border-none rounded-sm text-custom-gray focus:outline-yellow focus:outline-none focus:outline-[1px]' 
+                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
                         type='email' 
                         name='email'
                         value={email}
@@ -79,7 +79,7 @@ const Registration = () => {
                    <div className='border-2 border-black w-full rounded-xl flex flex-row relative'>
                       <FontAwesomeIcon icon={faUser} className='absolute top-[14px] left-[12px] text-custom-gray'/>
                       <input 
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray bg-inherit w-full border-none rounded-sm text-custom-gray focus:outline-yellow focus:outline-none focus:outline-[1px]' 
+                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
                         type='text' 
                         name='username'
                         value={username}
@@ -91,7 +91,7 @@ const Registration = () => {
                    <div className='border-2 border-black w-full rounded-xl flex flex-row relative'>
                       <FontAwesomeIcon icon={faLock} className='absolute top-[14px] left-[12px] text-custom-gray'/>
                       <input 
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray bg-inherit w-full border-none rounded-sm text-custom-gray focus:outline-yellow focus:outline-none focus:outline-[1px]' 
+                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
                         type='password' 
                         name='password' 
                         value={password}
@@ -103,7 +103,7 @@ const Registration = () => {
                     <div className='border-2 border-black w-full rounded-xl flex flex-row relative'>
                       <FontAwesomeIcon icon={faUser} className='absolute top-[14px] left-[12px] text-custom-gray'/>
                       <input 
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray bg-inherit w-full border-none rounded-sm text-custom-gray focus:outline-yellow focus:outline-none focus:outline-[1px]' 
+                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
                         type='text' 
                         name='firstname'
                         value={firstname}
@@ -115,7 +115,7 @@ const Registration = () => {
                     <div className='border-2 border-black w-full rounded-xl flex flex-row relative'>
                       <FontAwesomeIcon icon={faUser} className='absolute top-[14px] left-[12px] text-custom-gray'/>
                       <input 
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray bg-inherit w-full border-none rounded-sm text-custom-gray focus:outline-yellow focus:outline-none focus:outline-[1px]' 
+                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
                         type='text' 
                         name='lastname'
                         value={lastname}
@@ -129,7 +129,7 @@ const Registration = () => {
 
                    <button 
                    type="submit"
-                   className='py-2 mt-4 border-2 rounded-xl text-white bg-yellow hover:bg-black hover:text-white'>Sign Up</button>
+                   className='py-2 mt-4 border-none rounded-xl text-white bg-yellow hover:bg-black hover:text-white'>Sign Up</button>
                   </form>
 
                   

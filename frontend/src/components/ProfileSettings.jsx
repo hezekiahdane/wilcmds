@@ -11,12 +11,12 @@ const ProfileSettings = () => {
   return (
     <>
       {/* Sidebar */}
-      <div className="absolute left-4 w-[18%] h-[80%] top-20 2xl:w-[18%] 2xl:text-lg text-white bg-black flex flex-col p-2 gap-2 rounded-md rounded-l-none text-sm">
+      <div className="absolute h-[100%] top-20 w-[15%] 2xl:text-lg bg-black flex flex-col pt-8 ">
         {nav.map((item, index) => (
           <ul key={index}>
             <li>
             <Link to={item.href}>
-            <div className={`px-3 py-2 text-white hover:bg-black-2 hover:text-yellow 
+            <div className={`text-center py-4 text-white hover:text-yellow 
                 ${isActive(item.href) ? 'text-yellow bg-black-2 border-l-2 border-yellow' : ''}`}>
               {item.name}
             </div>

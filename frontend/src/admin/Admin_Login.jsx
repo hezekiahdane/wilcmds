@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 
 import { UserContext } from "./App";
 
-const Login = () => {
+const Admin_Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isError, setIsError] = useState(false);
@@ -124,4 +124,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Admin_Login;

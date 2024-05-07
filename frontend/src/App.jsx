@@ -6,7 +6,7 @@ import { client }  from './Url'
 import Home from './Home';
 import Login from './Login';
 import Registration from './Registration';
-import ProfileSettings from './ProfileSettings';
+import ProfileSettings from './components/ProfileSettings';
 import ManageProfile from './ManageProfile';
 
 export const UserContext = createContext();

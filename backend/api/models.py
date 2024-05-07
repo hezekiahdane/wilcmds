@@ -42,3 +42,20 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	objects = AppUserManager()
 	def __str__(self):
 		return self.username
+	
+
+class Upload(models.Model):
+    upload_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    filetype = models.CharField(max_length=50)
+    filesize = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class Post(models.Model):
+    post_id = models.AutoField(primary_key=True)
+    caption = models.CharField(max_length=255)
+    description = models.TextField()
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
