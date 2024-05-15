@@ -54,9 +54,8 @@ class Post(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 	image_file = models.ImageField(blank=True, upload_to='post_images')
 
-
 class Comments(models.Model):
-	comment_id = models.AutoField(primary_key=True)
+	comments_id = models.AutoField(primary_key=True)
 	user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 	content = models.CharField(max_length=200)
 	timestamp = models.DateTimeField(auto_now_add=True)
