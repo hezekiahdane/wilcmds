@@ -145,7 +145,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = '/static/'
 
 # Change this root to your actual root in your local computer
-MEDIA_ROOT = 'C:/Users/Zeke/Desktop/wilcmds/backend/media/'
+MEDIA_URL = 'C:/Users/Zeke/Desktop/wilcmds/backend/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
@@ -158,6 +158,7 @@ CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_COOKIE_NAME = 'csrftoken'

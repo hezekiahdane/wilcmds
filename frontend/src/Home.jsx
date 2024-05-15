@@ -1,11 +1,12 @@
 import React from 'react'
+import PostCard from "./components/PostCard";
+
 
 const Home = () => {
   return (
-    <div className='pt-20 text-white mx-auto md:w-10/12 h-full'>
-      Home
-    
-    </div>
+    <div className="flex justify-center items-center flex-col"> {/* flex-col added */}
+      <PostCard />
+  </div>
   )
 }
 

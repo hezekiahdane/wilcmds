@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { client } from "./Url";
-import { UserContext } from "./App";
+import { client } from "../Url";
+import { UserContext } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
-import profileIcon from '../images/profile_placeholder.jpg'
+import profileIcon from '/images/profile_placeholder.jpg'
 
-const ManageProfile = () => {
+const AdminSettings = () => {
     const [currentUser, setCurrentUser] = useContext(UserContext);
     const [userProfile, setUserProfile] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -115,7 +115,7 @@ const ManageProfile = () => {
 
     return (
         <>
-            <div className="flex ml-96 mt-24">
+            <div className="relative ml-96 mt-24">
                 <div className="mt-20 text-lg ">
                     <div className="text-lg font-bold 2xl:text-xl mb-20">Profile Settings</div>
                     <form
@@ -260,4 +260,4 @@ const ManageProfile = () => {
     );
 };
 
-export default ManageProfile;
+export default AdminSettings;

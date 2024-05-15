@@ -3,8 +3,8 @@ import { client } from "./Url";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { Navigate } from "react-router-dom";
-
 import { UserContext } from "./App";
+import check from '/Check.svg'
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,41 +12,37 @@ const Login = () => {
   const [isError, setIsError] = useState(false);
   const [toast, setToast] = useState("");
   const [currentUser, setCurrentUser] = useContext(UserContext);
+  const [redirectToAdminDashboard, setRedirectToAdminDashboard] = useState(false);
 
   function submitLogin(e) {
     e.preventDefault();
-    try {
-      client
-        .post("/login", {
-          email: email,
-          password: password,
-        })
-        .then(function (res) {
-          console.log(res.data);
-          setCurrentUser(true);
-        })
-        .catch((error) => {
-          console.error(error.response.data);
-          if (error.response.data && error.response) {
-            const invalidToast = error.response.data;
-            handleToast(invalidToast);
-            setIsError(true);
-          }
-        });
-    } catch (error) {
-      console.error(
-        "An unexpected error occured during the HTTP request.",
-        error
-      );
-    }
+    client.post("/login", {
+      email: email,
+      password: password,
+    })
+    .then(function (res) {
+      console.log(res.data);
+      setCurrentUser(res.data); // Assuming res.data contains the user data
+      if (res.data.is_staff) {
+        setRedirectToAdminDashboard(true); // Redirect to admin dashboard if is_staff is true
+      } else {
+        setCurrentUser(true); // Set user logged in state
+      }
+    })
+    .catch((error) => {
+      console.error(error.response.data);
+      const invalidToast = error.response.data;
+      handleToast(invalidToast);
+      setIsError(true);
+    });
   }
 
-  if (currentUser) {
-    return (
-      <>
-        <Navigate to="/" />
-      </>
-    );
+  if (redirectToAdminDashboard) {
+    return <Navigate to="/admin/home" />; // Redirect to the admin dashboard
+  }
+
+  if (currentUser && !redirectToAdminDashboard) {
+    return <Navigate to="/" />; // Redirect to the home page for regular users
   }
 
   function handleToast(toast) {
@@ -104,9 +100,15 @@ const Login = () => {
                 />
               </div>
 
-              <div className="w-80 h-5 pl-10 justify-start items-center">
-                <span className="text-xs font-normal font-['Poppins']">I accept</span><span className="text-black text-xs font-normal font-['Poppins']"> </span><span className="text-yellow text-xs font-normal font-['Poppins']">terms and conditions</span><span className="text-black text-xs font-normal font-['Poppins']"> </span><span className="text-xs font-normal font-['Poppins']">& privacy policy</span>
+              <div className="w-80 h-5 ml- justify-start items-center flex">
+                <div>
+                    <img src={check} alt="check mark" />
+                </div>
+                <span className="text-xs font-normal ml-4 mt-1 font-['Poppins']">I accept </span>
+                <span className="text-yellow text-xs ml-1 mt-1 font-normal font-['Poppins']"> terms and conditions</span>
+                <span className="text-xs ml-1 mt-1 font-normal font-['Poppins']"> & privacy policy</span>
               </div>
+
 
             
               <button

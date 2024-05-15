@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.exceptions import ValidationError
+
 
 class AppUserManager(BaseUserManager):
 	def create_user(self, email, username, password=None, **extra_fields):
@@ -26,8 +28,7 @@ class AppUserManager(BaseUserManager):
 		user.set_password(password)
 		user.save(using=self._db)
 		return user
-
-
+	
 class AppUser(AbstractBaseUser, PermissionsMixin):
 	user_id = models.AutoField(primary_key=True)
 	email = models.EmailField(max_length=50, unique=True)
@@ -42,20 +43,26 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	objects = AppUserManager()
 	def __str__(self):
 		return self.username
-	
-
-class Upload(models.Model):
-    upload_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    filetype = models.CharField(max_length=50)
-    filesize = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Post(models.Model):
-    post_id = models.AutoField(primary_key=True)
-    caption = models.CharField(max_length=255)
-    description = models.TextField()
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
+	post_id = models.AutoField(primary_key=True)
+	caption = models.CharField(max_length=255)
+	description = models.TextField()
+	likes = models.IntegerField(default=0)
+	dislikes = models.IntegerField(default=0)
+	user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	image_file = models.ImageField(blank=True, upload_to='post_images')
+
+
+class Comments(models.Model):
+	comment_id = models.AutoField(primary_key=True)
+	user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+	content = models.CharField(max_length=200)
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+class Analytics(models.Model):
+	analytics_id = models.AutoField(primary_key=True)
+	post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+	total_likes = models.IntegerField(default=0)
+	action_timestamp = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from django.core.exceptions import ValidationError
+from . models import Post, Comments, Analytics
 
 UserModel = get_user_model()
 
@@ -19,23 +20,29 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 		)
 		return user_obj
 
-
 class UserLoginSerializer(serializers.Serializer):
-	email = serializers.EmailField()
-	password = serializers.CharField()
-	def check_user(self, clean_data):
-		email = clean_data['email']
-		password = clean_data['password']
-		print(email)
-		print(password)
-		user = authenticate(username=email, password=password)
-		print('Authenticated:', user)
-		if not user:
-			raise ValidationError('User does not exist.')
-			
-		if not user.check_password(password):
-			raise ValidationError('Incorrect password. Please try again.')
-		return user
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def check_user(self, clean_data):
+        email = clean_data['email']
+        password = clean_data['password']
+        user = authenticate(username=email, password=password)
+
+        if not user:
+            raise ValidationError('User does not exist.')
+
+        if not user.check_password(password):
+            raise ValidationError('Incorrect password. Please try again.')
+
+        # Include is_staff in the returned user data
+        return {
+            'user_id': user.user_id,
+            'username': user.username,
+            'email': user.email,
+            'is_staff': user.is_staff  # Include this to check if the user is an admin
+        }
+
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -47,3 +54,34 @@ class UserSerializer(serializers.ModelSerializer):
 			if user_profile_data is not None:
 				instance.user_profile = user_profile_data
 			return super().update(instance, validated_data)
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comments
+		fields = '__all__'
+
+class AdminLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+
+        if email and password:
+            user = authenticate(email=email, password=password)
+
+            if user:
+                if user.is_staff:
+                    return user
+                else:
+                    raise serializers.ValidationError("You do not have permission to access the admin panel.")
+            else:
+                raise serializers.ValidationError("Invalid email or password.")
+        else:
+            raise serializers.ValidationError("Both email and password are required fields.")

@@ -71,6 +71,7 @@ const Navbar = () => {
       navigate("/");
     });
   }
+  
   function openModal() {
     if (!isOpen) {
       setIsOpen(true);
