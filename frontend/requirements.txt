@@ -1,0 +1,12 @@
+axios 
+react-router-dom 
+react-bootstrap 
+bootstrap 
+tailwindcss 
+postcss 
+autoprefixer
+date-fns
+
+
+/npm install axios react-router-dom react-bootstrap bootstrap -D tailwindcss postcss autoprefixer date-fns
+
