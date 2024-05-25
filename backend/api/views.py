@@ -103,21 +103,21 @@ class UserProfileUpdate(UpdateAPIView):
 		update_session_auth_hash(request, instance)
 		return Response(serializer.data)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PostView(APIView):
-	@method_decorator(csrf_exempt)
-	def get(self, request):
-		post = Post.objects.all()
-		serializer = PostSerializer(post, many=True)
-		return Response (serializer.data)
-	
-	permission_classes = [AllowAny]
-
-	def post(self, request):
-		serializer = PostSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = [AllowAny]
+ 
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+ 
+    def post(self, request):
+        serializer = PostSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdatePost(APIView):
 	def get_object(self, pk):

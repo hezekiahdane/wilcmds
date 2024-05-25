@@ -52,7 +52,7 @@ class Post(models.Model):
 	dislikes = models.IntegerField(default=0)
 	user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(auto_now_add=True)
-	image_file = models.ImageField(blank=True, upload_to='post_images')
+	image_file = models.ImageField(blank=True, upload_to='post_images/')
 
 class Comments(models.Model):
 	comments_id = models.AutoField(primary_key=True)

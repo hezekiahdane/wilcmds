@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { client } from './Url';
+import { client } from '../Url';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";

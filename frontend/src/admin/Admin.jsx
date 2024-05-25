@@ -1,34 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import {client} from '../Url';
-
+import { useState, useEffect } from 'react';
+import { client } from '../Url';
+import AdminPost from './AdminPost';
 
 const Admin = () => {
-
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    client.get('/posts')
-      .then(response => {
+    const fetchPosts = async () => {
+      try {
+        const response = await client.get('/posts');
         setPosts(response.data);
-      })
-      .catch(error => console.error('Error fetching posts: ', error));
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup the interval on component unmount
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading posts: {error.message}</div>;
+  }
+
+  const formattedDate = currentTime.toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const formattedTime = currentTime.toLocaleTimeString();
 
   return (
-    <div className="container mx-auto p-4">
-        <div className='ml-96 mt-16'>
-        {posts.map(post => (
-          <div key={post.post_id} className="mt-4 p-4 shadow-lg rounded-lg">
-            <h3>{post.caption}</h3>
-            <p>{post.description}</p>
-            {post.image_file && <img src={post.image_file} alt="Post" className="max-w-xs" />}
-            <p>Likes: {post.likes}, Dislikes: {post.dislikes}</p>
-          </div>
-        ))}
+    <div className="relative text-center text-lg bg-silver text-black">
+      <div className="relative text-left text-xl pt-12 pl-16 -mb-8">
+        <b>Welcome, Admin</b>
+        <div className="text-[15px] text-dimgray">
+          Today is {formattedDate}, {formattedTime}
+        </div>
       </div>
+      <AdminPost posts={posts} setPosts={setPosts} />
     </div>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

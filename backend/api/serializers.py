@@ -54,12 +54,28 @@ class UserSerializer(serializers.ModelSerializer):
 			if user_profile_data is not None:
 				instance.user_profile = user_profile_data
 			return super().update(instance, validated_data)
-
+ 
 class PostSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ['post_id', 'caption', 'description', 'image_file', 'timestamp', 'user']
+        read_only_fields = ['post_id', 'timestamp', 'user']
 
+    def get_user(self, obj):
+        return {
+            "username": obj.user.username,
+            "user_profile": obj.user.user_profile.url if obj.user.user_profile else None
+        }
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        post = Post.objects.create(user=user, **validated_data)
+        return post
+
+    
 class CommentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Comments

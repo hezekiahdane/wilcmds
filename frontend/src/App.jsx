@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom'
 import  Navbar from './components/Navbar'
 import { client }  from './Url';
-import Home from './Home';
-import Login from './Login';
-import Registration from './Registration';
+import Home from './User/Home';
+import Login from './User/Login';
+import Registration from './User/Registration';
 import ProfileSettings from './components/ProfileSettings';
-import ManageProfile from './ManageProfile';
+import ManageProfile from './User/ManageProfile';
 export const UserContext = createContext();
 import Admin from './admin/Admin';
 import AdminNavbar from './admin/AdminNavbar'

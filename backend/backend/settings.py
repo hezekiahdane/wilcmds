@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-&y3aam=y2lqq+y%%-h3ty$h%+9(^2w@kil&&4hgfr*br4*g*k1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -145,7 +145,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = '/static/'
 
 # Change this root to your actual root in your local computer
-MEDIA_URL = 'C:/Users/Zeke/Desktop/wilcmds/backend/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
-import { client } from "./Url";
+import React, { useContext, useState } from "react";
+import { client } from "../Url";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { Navigate } from "react-router-dom";
-import { UserContext } from "./App";
+import { UserContext } from "../App";
 import check from '/Check.svg'
 
 const Login = () => {
@@ -31,7 +31,7 @@ const Login = () => {
     })
     .catch((error) => {
       console.error(error.response.data);
-      const invalidToast = error.response.data;
+      const invalidToast = error.response.data.detail || 'User does not exist.';
       handleToast(invalidToast);
       setIsError(true);
     });
@@ -91,9 +91,9 @@ const Login = () => {
                   className="absolute top-[14px] left-[12px] text-custom-gray"
                 />
                 <input
-                        className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
-                        type="password"
-                  name="email"
+                  className=' text-sm pl-10 py-3 placeholder-custom-gray peer bg-inherit w-full border-none rounded text-custom-gray focus:outline-none' 
+                  type="password"
+                  name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"

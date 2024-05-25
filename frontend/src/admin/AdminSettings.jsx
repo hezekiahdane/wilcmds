@@ -115,12 +115,12 @@ const AdminSettings = () => {
 
     return (
         <>
-            <div className="relative ml-96 mt-24">
-                <div className="mt-20 text-lg ">
-                    <div className="text-lg font-bold 2xl:text-xl mb-20">Profile Settings</div>
+            <div className="flex flex-col ml-16 mt-20">
+                <div className="text-lg">
+                    <div className="text-lg font-bold 2xl:text-xl mb-24">Profile Settings</div>
                     <form
                         onSubmit={handleSubmit}
-                        className="flex justify-center gap-10"
+                        className="flex ml-60 gap-10"
                     >
                         <div className="flex flex-col items-start space-y-16">
                             <div className="relative flex gap-10">
@@ -130,7 +130,7 @@ const AdminSettings = () => {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className="px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:border-yellow"
+                                    className="px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:text-yellow focus:border-yellow"
                                 />
                                 <label
                                     htmlFor="username"
@@ -146,7 +146,7 @@ const AdminSettings = () => {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:border-yellow"
+                                        className="px-4 py-3 mt-8 border rounded-lg peer focus:text-yellow focus:outline-none focus:border-yellow"
                                     />
                                     <label
                                         htmlFor="username"
@@ -164,7 +164,7 @@ const AdminSettings = () => {
                                     name="firstname"
                                     value={formData.firstname}
                                     onChange={handleChange}
-                                    className="px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:border-yellow"
+                                    className="px-4 py-3 mt-8 border rounded-lg peer focus:text-yellow focus:outline-none focus:border-yellow"
                                 />
                                 <label
                                     htmlFor="firstname"
@@ -180,7 +180,7 @@ const AdminSettings = () => {
                                         name="lastname"
                                         value={formData.lastname}
                                         onChange={handleChange}
-                                        className="px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:border-yellow"
+                                        className="px-4 py-3 mt-8 border rounded-lg peer focus:text-yellow focus:outline-none focus:border-yellow"
                                     />
                                     <label
                                         htmlFor="lastname"
@@ -199,7 +199,7 @@ const AdminSettings = () => {
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className={`px-4 py-3 mt-8 border rounded-lg peer focus:outline-none focus:border-yellow ${passwordError && 'border-red-600'}`}
+                                        className={`px-4 py-3 mt-8 border rounded-lg peer focus:text-yellow focus:outline-none focus:border-yellow ${passwordError && 'border-red-600'}`}
                                     />
                                     <label
                                         htmlFor="password"
@@ -230,17 +230,17 @@ const AdminSettings = () => {
                                     <img
                                         src={URL.createObjectURL(formData.user_profile)}
                                         alt="profile picture"
-                                        className="rounded-full object-cover cursor-pointer w-[150px] h-[150px] border border-yellow hover:border-black"
+                                        className="rounded-full object-cover cursor-pointer w-[150px] h-[150px] border hover:border-yellowborder-black"
                                     />
                                 ) : (
                                     <img
                                         src={baseUrl + imagePath}
                                         alt="profile picture"
-                                        className="rounded-full object-cover cursor-pointer w-[150px] h-[150px] border border-yellow hover:border-black"
+                                        className="rounded-full object-cover cursor-pointer w-[150px] h-[150px] border hover:border-yellow hover:border-black"
                                     />
                                 )}
 
-                                <span className="duration-75 hover:border-b-2 hover:text-yellow hover:border-b-yellow">
+                                <span className="hover:text-yellow">
                                     <FontAwesomeIcon icon={faUpload} className="mr-2" />
                                     Upload Profile
                                 </span>
