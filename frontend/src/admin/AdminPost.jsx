@@ -14,13 +14,13 @@ const AdminPost = ({ posts, setPosts }) => {
   const handleDelete = async (postId) => {
     try {
       const csrfToken = document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
-      await client.delete(`/posts/${postId}`, {
+      await client.delete(`/posts/update/${postId}`, {
         headers: {
           'X-CSRFToken': csrfToken
         }
       });
       alert('Post deleted successfully!');
-      window.location.reload();
+      setPosts(posts.filter(post => post.post_id !== postId));
     } catch (error) {
       console.log('Error deleting post:', error);
     }
@@ -46,7 +46,7 @@ const AdminPost = ({ posts, setPosts }) => {
         formData.append('image_file', editFormData.image_file);
       }
 
-      const response = await client.put(`/posts/${editingPostId}`, formData, {
+      const response = await client.put(`/posts/update/${editingPostId}`, formData, {
         headers: {
           'X-CSRFToken': csrfToken,
           'Content-Type': 'multipart/form-data',
@@ -56,7 +56,6 @@ const AdminPost = ({ posts, setPosts }) => {
       setPosts(posts.map(post => post.post_id === editingPostId ? response.data : post));
       setEditingPostId(null);
       alert('Post edited successfully!');
-      window.location.reload();
     } catch (error) {
       console.log('Error updating post:', error);
     }
@@ -69,7 +68,7 @@ const AdminPost = ({ posts, setPosts }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-16 p-16 hover:cursor-pointer">
       {posts.map((post) => (
-        <div key={post.post_id} className="relative rounded-xl bg-white  border-solid border-gray-300 p-4 mb-6 shadow-lg overflow-hidden">
+        <div key={post.post_id} className="relative rounded-xl bg-white border-solid border-gray-300 p-4 mb-6 shadow-lg overflow-hidden">
           <div className="flex justify-between items-center text-lg mb-4 p-4 rounded-t-xl bg-gray-100">
             <div className="flex items-center space-x-4">
               <img
@@ -183,7 +182,7 @@ const AdminPost = ({ posts, setPosts }) => {
                 </button>
                 <button className="flex items-center text-gray-500">
                   <img src="/comment-icon.svg" alt="Comment" className="w-5 h-5 mr-2" />
-                  {post.comments && post.comments.length > 0 ? `${post.comments.length} Comments` : 'Comments'}
+                  {post.comments_count} Comments
                 </button>
               </div>
             </>

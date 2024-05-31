@@ -20,6 +20,13 @@ from . models import Post, Comments, Analytics
 from .serializers import PostSerializer, AdminLoginSerializer, CommentSerializer
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+from django.contrib.auth import get_user_model
+from django.db.models import Count
+from django.db.models import Sum
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -119,36 +126,146 @@ class PostView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UpdatePost(APIView):
-	def get_object(self, pk):
-		try:
-			return Post.objects.get(pk=pk)
-		except Post.DoesNotExist:
-			raise Http404
-		
-	def put(self, request, pk):
-		post = self.get_object(pk)
-		serializer = PostSerializer(post, data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response (serializer.data)
-		return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class PostDetail(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    lookup_field = 'pk'
+
+class PostComments(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, post_id):
+        comments = Comments.objects.filter(post_id=post_id)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(post_id=post_id)  
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            'content': request.data.get('content'),
+            'user': request.user.user_id,  
+            'post': post.post_id 
+        }
+        
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, post_id, comment_id):
+        try:
+            comment = Comments.objects.get(post_id=post_id, id=comment_id, user=request.user)
+            comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Comments.DoesNotExist:
+            return Response({'error': 'Comment not found or not authorized'}, status=status.HTTP_404_NOT_FOUND)
 	
-	def delete(self, request, pk):
-		post = self.get_object(pk)
-		post.delete()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+class UpdatePost(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            raise Http404
+
+    def put(self, request, pk):
+        post = self.get_object(pk)
+        serializer = PostSerializer(post, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        post = self.get_object(pk)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CommentsView(APIView):
-	def get(self, request):
-		comment_objects = Comments.objects.all()
+    def get(self, request, post_id):
+        comments = Comments.objects.filter(post_id=post_id)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
-		serializer = CommentSerializer(comment_objects, many=True)
-		return Response(serializer.data)
-	
-	def post(self, request):
-		serializer = CommentSerializer(data=request.data)
-		if serializer.is_valid():
-			serializer.save()
-			return Response (serializer.data, status=status.HTTP_200_OK)
-		return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, post=post)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LikePost(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        user = request.user
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if user in post.likes.all():
+            post.likes.remove(user)
+            status_message = 'unliked'
+        else:
+            post.likes.add(user)
+            status_message = 'liked'
+
+        post.save()
+        return Response({'status': status_message, 'likes': post.likes.count()})
+    
+
+class TotalLikesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        total_likes = Post.objects.annotate(like_count=Count('likes')).aggregate(total_likes=Sum('like_count')).get('total_likes', 0)
+        return Response({'total_likes': total_likes})
+
+class IncrementDownloadCount(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        try:
+            post = Post.objects.get(post_id=post_id)
+            post.downloads += 1
+            post.save()
+            return Response({'downloads': post.downloads}, status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class TotalDownloadsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        total_downloads = Post.objects.aggregate(total_downloads=Sum('downloads')).get('total_downloads', 0)
+        return Response({'total_downloads': total_downloads})
+
+class TotalCommentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        total_comments = Comments.objects.count()
+        return Response({'total_comments': total_comments})
+
+class TotalGraphView(APIView):
+    def get(self, request):
+        posts_likes = Post.objects.annotate(like_count=Count('likes')).values_list('like_count', flat=True)
+        likes_array = np.array(list(posts_likes))
+        total_likes = np.sum(likes_array)
+        
+        total_downloads = Download.objects.aggregate(total_downloads=Sum('count')).get('total_downloads', 0)
+        total_comments = Comments.objects.count()
+        
+        return Response({'total_likes': total_likes, 'total_downloads': total_downloads, 'total_comments': total_comments})

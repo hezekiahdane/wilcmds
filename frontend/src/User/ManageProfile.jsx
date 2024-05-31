@@ -4,13 +4,14 @@ import { UserContext } from "../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
+const fallbackProfileImage = "../profile_placeholder"; 
+
 const ManageProfile = () => {
     const [currentUser, setCurrentUser] = useContext(UserContext);
     const [userProfile, setUserProfile] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
     const baseUrl = "http://localhost:8000";
-    const fallbackProfileImage = "/path-to-fallback-profile-image.png"; // Define a fallback profile image path
 
     useEffect(() => {
         if (currentUser) {

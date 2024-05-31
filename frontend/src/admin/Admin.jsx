@@ -49,7 +49,7 @@ const Admin = () => {
   const formattedTime = currentTime.toLocaleTimeString();
 
   return (
-    <div className="relative text-center text-lg bg-silver text-black">
+    <div className="relative text-center overflow-hidden text-lg bg-silver text-black">
       <div className="relative text-left text-xl pt-12 pl-16 -mb-8">
         <b>Welcome, Admin</b>
         <div className="text-[15px] text-dimgray">
