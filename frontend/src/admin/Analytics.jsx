@@ -82,5 +82,8 @@ const Analytics = () => {
     </div>
   );
 };
+  );
+};
 
+export default Analytics;
 export default Analytics;

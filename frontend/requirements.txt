@@ -7,7 +7,11 @@ postcss
 autoprefixer
 date-fns
 js-cookie
+<<<<<<< HEAD
 html-to-image
+=======
+
+>>>>>>> origin/main
 
 /npm install axios react-router-dom react-bootstrap bootstrap -D tailwindcss postcss autoprefixer date-fns
 

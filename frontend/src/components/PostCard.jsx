@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { client } from '../Url';
 import { formatDistanceToNow } from 'date-fns';
+import html2canvas from 'html2canvas';
 import html2canvas from 'html2canvas';
 
 const PostCard = () => {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState({});
   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    fetchPosts();
+    fetchUser();
+  }, []);
+
+  const fetchPosts = () => {
     fetchPosts();
     fetchUser();
   }, []);
@@ -19,6 +27,11 @@ const PostCard = () => {
       .then(response => {
         setPosts(response.data);
       })
+      .catch(error => console.log('Failed to fetch posts:', error));
+  };
+
+  const fetchUser = () => {
+    client.get('/user')
       .catch(error => console.log('Failed to fetch posts:', error));
   };
 
@@ -44,6 +57,23 @@ const PostCard = () => {
     }
     return cookieValue;
   };
+      .catch(error => console.log('Failed to fetch user:', error));
+  };
+
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
 
   const handleLike = (postId) => {
     const csrfToken = getCookie('csrftoken');
@@ -52,8 +82,15 @@ const PostCard = () => {
         'X-CSRFToken': csrfToken,
       }
     })
+    const csrfToken = getCookie('csrftoken');
+    client.post(`/posts/${postId}/like`, null, {
+      headers: {
+        'X-CSRFToken': csrfToken,
+      }
+    })
       .then(response => {
         setPosts(posts.map(post => 
+          post.post_id === postId ? { ...post, likes: response.data.likes, is_liked: response.data.status === 'liked' } : post
           post.post_id === postId ? { ...post, likes: response.data.likes, is_liked: response.data.status === 'liked' } : post
         ));
       })
@@ -110,6 +147,12 @@ const PostCard = () => {
           className="relative rounded-xl bg-white border border-solid border-gray-300 p-4 mb-6 shadow-lg overflow-hidden"
           onClick={() => handlePostClick(post.post_id)}
         >
+        <div 
+          key={post.post_id} 
+          id={`post-${post.post_id}`}
+          className="relative rounded-xl bg-white border border-solid border-gray-300 p-4 mb-6 shadow-lg overflow-hidden"
+          onClick={() => handlePostClick(post.post_id)}
+        >
           <div className="flex justify-between items-center text-lg mb-4 p-4 rounded-t-xl bg-gray-100">
             <div className="flex items-center space-x-4">
               <img
@@ -146,12 +189,17 @@ const PostCard = () => {
                 e.target.src = 'fallback-image-url'; // Provide a fallback image URL
               }}
               onLoad={() => console.log('Image loaded')}
+              onLoad={() => console.log('Image loaded')}
             />
           )}
           
           <div className="flex justify-around items-center p-4 bg-white rounded-b-xl">
             <button
               className={`flex items-center ${post.is_liked ? 'text-red-500' : 'text-blue-500'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike(post.post_id);
+              }}
               onClick={(e) => {
                 e.stopPropagation();
                 handleLike(post.post_id);
@@ -164,6 +212,10 @@ const PostCard = () => {
               <img src="/comment-icon.svg" alt="Comment" className="w-5 h-5 mr-2" />
               {post.comments_count} Comments
             </button>
+            <button className="flex items-center text-gray-500" onClick={(e) => {
+              e.stopPropagation();
+              handleDownload(post.post_id);
+            }}>
             <button className="flex items-center text-gray-500" onClick={(e) => {
               e.stopPropagation();
               handleDownload(post.post_id);

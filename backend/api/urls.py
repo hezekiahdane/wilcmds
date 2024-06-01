@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from .views import UserRegister, UserLogin, UserLogout, UserView, PostView, UpdatePost, UserProfileUpdate, LikePost, PostDetail, PostComments, TotalLikesView, IncrementDownloadCount, TotalDownloadsView, TotalCommentsView, TotalGraphView
 

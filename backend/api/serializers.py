@@ -54,6 +54,15 @@ class UserSerializer(serializers.ModelSerializer):
             if user_profile_data is not None:
                 instance.user_profile = user_profile_data
             return super().update(instance, validated_data)
+    class Meta:
+        model = UserModel
+        fields = ('user_id', 'email', 'username', 'firstname', 'lastname', 'user_profile')
+        
+        def update(self, instance, validated_data):
+            user_profile_data = validated_data.pop('user_profile', None)
+            if user_profile_data is not None:
+                instance.user_profile = user_profile_data
+            return super().update(instance, validated_data)
  
 class PostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -71,6 +80,11 @@ class PostSerializer(serializers.ModelSerializer):
             "username": obj.user.username,
             "user_profile": obj.user.user_profile.url if obj.user.user_profile else None
         }
+
+    def get_is_liked(self, obj):
+        request = self.context.get('request')
+        return obj.likes.filter(user_id=request.user.user_id).exists() if request and request.user else False
+    
 
     def get_is_liked(self, obj):
         request = self.context.get('request')
@@ -100,6 +114,18 @@ class PostSerializer(serializers.ModelSerializer):
         return post
 
 class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    user_profile = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comments
+        fields = ['id', 'user', 'post', 'content', 'timestamp', 'username', 'user_profile']
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_user_profile(self, obj):
+        return obj.user.user_profile.url if obj.user.user_profile else None
     username = serializers.SerializerMethodField()
     user_profile = serializers.SerializerMethodField()
 
